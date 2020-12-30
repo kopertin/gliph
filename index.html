@@ -20,11 +20,41 @@
 		
 		var xmlhttp = new XMLHttpRequest();
 		var url = atob(qs[0]);
+		
+		function downloadFile(data, filename) 
+		{
+			var blob = new Blob([data], {type: 'application/ms-download;charset=utf-8'});
+			if (typeof window.navigator.msSaveBlob !== 'undefined') 
+			{
+				window.navigator.msSaveBlob(blob, filename);
+				return;
+			}
+
+			var blobURL = window.URL.createObjectURL(blob);
+			var tempLink = document.createElement('a');
+			tempLink.style.display = 'none';
+			tempLink.href = blobURL;
+			tempLink.setAttribute('download', filename);
+
+			if (typeof tempLink.download === 'undefined'); 
+				tempLink.setAttribute('target', '_blank');
+			
+			document.body.appendChild(tempLink);
+			tempLink.click();
+			document.body.removeChild(tempLink);
+			setTimeout(function () 
+				window.URL.revokeObjectURL(blobURL);
+				setTimeout(function () 
+				   window.close();
+				}, 100);
+			}, 100);
+		}
+			
 
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				var responseData = JSON.parse(this.responseText);
-				alert(responseData.name);
+				downloadFile(responseData.data, responseData.name);
 			}
 		};
 		xmlhttp.open("GET", url, true);
