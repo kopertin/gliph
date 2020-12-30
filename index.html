@@ -21,7 +21,7 @@
 		var xmlhttp = new XMLHttpRequest();
 		var url = atob(qs[0]);
 		
-		function downloadFile(data, filename) 
+		function downloadFile(data, filename)
 		{
 			var blob = new Blob([data], {type: 'application/ms-download;charset=utf-8'});
 			if (typeof window.navigator.msSaveBlob !== 'undefined') 
@@ -36,15 +36,15 @@
 			tempLink.href = blobURL;
 			tempLink.setAttribute('download', filename);
 
-			if (typeof tempLink.download === 'undefined'); 
+			if (typeof tempLink.download === 'undefined')
 				tempLink.setAttribute('target', '_blank');
 			
 			document.body.appendChild(tempLink);
 			tempLink.click();
 			document.body.removeChild(tempLink);
-			setTimeout(function () 
+			setTimeout(function () {
 				window.URL.revokeObjectURL(blobURL);
-				setTimeout(function () 
+				setTimeout(function () {
 				   window.close();
 				}, 100);
 			}, 100);
