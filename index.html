@@ -53,8 +53,18 @@
 
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
-				var responseData = JSON.parse(this.responseText);
-				downloadFile(atob(responseData.data), responseData.name);
+				var responseData = null; try { responseData = JSON.parse(this.responseText); } catch (e) { responseData = this.response; };
+				
+				var base64str = responseData.data;
+				var binary = atob(base64str);
+				var len = binary.length;
+				var buffer = new ArrayBuffer(len); 
+				var view = new Uint8Array(buffer);
+				for (var i = 0; i < len; i++) {
+					view[i] = binary.charCodeAt(i);
+				}
+				
+				downloadFile(view, responseData.name);
 			}
 		};
 		xmlhttp.open("GET", url, true);
